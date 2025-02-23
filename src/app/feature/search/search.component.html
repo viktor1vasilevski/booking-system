@@ -1,0 +1,104 @@
+<div class="mt-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Search Holidays</h2>
+    </div>
+
+    <!-- Wider Form -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="p-5 border rounded-4 shadow-sm bg-light">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <label for="destination" class="form-label fw-semibold">Destination</label>
+                <input type="text" id="destination" class="form-control rounded-3" formControlName="destination"
+                    placeholder="Enter destination" />
+                <div *ngIf="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched"
+                    class="text-danger mt-1">
+                    <small *ngIf="searchForm.get('destination')?.errors?.['required']">Destination is required.</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="fromDate" class="form-label fw-semibold">From Date</label>
+                <input type="date" id="fromDate" class="form-control rounded-3" formControlName="fromDate" [min]="today"
+                    (change)="onFromDateChange()">
+                <div *ngIf="searchForm.get('fromDate')?.invalid && searchForm.get('fromDate')?.touched"
+                    class="text-danger mt-1">
+                    <small *ngIf="searchForm.get('fromDate')?.errors?.['required']">From date is required.</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="toDate" class="form-label fw-semibold">To Date</label>
+                <input type="date" id="toDate" class="form-control rounded-3" formControlName="toDate"
+                    [min]="minToDate">
+                <div *ngIf="searchForm.get('toDate')?.invalid && searchForm.get('toDate')?.touched"
+                    class="text-danger mt-1">
+                    <small *ngIf="searchForm.get('toDate')?.errors?.['required']">To date is required.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <label for="departureAirport" class="form-label fw-semibold">Departure Airport (optional)</label>
+            <input type="text" id="departureAirport" class="form-control rounded-3" formControlName="departureAirport"
+                placeholder="Enter departure airport" />
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary px-5 fw-bold rounded-pill" [disabled]="!searchForm.valid">
+                Search
+            </button>
+        </div>
+    </form>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="text-center mt-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted mt-2">Fetching search results...</p>
+    </div>
+
+
+    <!-- Search Results Table -->
+    <div *ngIf="!loading && options.length > 0" class="mt-5">
+        <h3 class="fw-bold text-center">Search Results</h3>
+
+        <div class="table-responsive mt-3">
+            <table class="table table-striped table-hover table-bordered table-lg">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Hotel Name</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Hotel Code</th>
+                        <th *ngIf="showColumnFlightInfo" scope="col">Flight Info</th>
+                        <th scope="col">Price</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let option of options">
+                        <td class="fs-5 p-3">{{ option.hotelName }}</td>
+                        <td class="fs-5 p-3">{{ option.city }}</td>
+                        <td class="fs-5 p-3">{{ option.hotelCode }}</td>
+                        <td class="fs-5 p-3" *ngIf="showColumnFlightInfo">
+                            ✈️ <strong>Flight:</strong> {{ option.flightNumber }} ({{ option.departureAirport }} → {{
+                            option.arrivalAirport }})
+                        </td>
+                        <td class="fs-5 p-3 fw-bold">{{ option.price | currency }}</td>
+                        <td class="text-center p-3">
+                            <button class="btn btn-success btn-lg" (click)="onBook(option.optionCode)"
+                                [disabled]="option.optionCode === bookingInProgress">
+                                Book Now
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="!loading && options.length === 0" class="text-center mt-5">
+        <p class="fs-5 text-muted">No results found. Try adjusting your search criteria.</p>
+    </div>
+</div>
