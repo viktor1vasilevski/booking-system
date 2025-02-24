@@ -1,4 +1,4 @@
-export enum NotificationType {
+export enum NotificationTypeEnum {
     Success = 0,
     BadRequest = 1,
     ServerError = 2,

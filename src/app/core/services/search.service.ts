@@ -1,10 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment.dev';
-import { ApiResponse } from '../../shared/models/api-response';
-import { SearchRes } from '../../shared/models/search-res.model';
-import { SearchReq } from '../../shared/models/search-req.model';
+import { SearchRequest } from '../../shared/models/requests/search-request.model';
+import { ApiResponse } from '../../shared/models/responses/api-response.model';
+import { SearchResponse } from '../../shared/models/responses/search-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,8 @@ export class SearchService {
   constructor(private http: HttpClient) {}
 
 
-  search(searchReq: SearchReq): Observable<ApiResponse<SearchRes>> {
-    return this.http.post<ApiResponse<SearchRes>>(`${this.baseUrl}/search/search`, searchReq);
+  search(searchRequest: SearchRequest): Observable<ApiResponse<SearchResponse>> {
+    return this.http.post<ApiResponse<SearchResponse>>(`${this.baseUrl}/search/search`, searchRequest);
   }
 
 }

@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../enviroments/enviroment.dev';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BookReq } from '../../shared/models/book-req.model';
-import { ApiResponse } from '../../shared/models/api-response';
-import { BookRes } from '../../shared/models/book-res.model';
+import { BookRequest } from '../../shared/models/requests/book-request.model';
+import { ApiResponse } from '../../shared/models/responses/api-response.model';
+import { BookResponse } from '../../shared/models/responses/book-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class BookingService {
   constructor(private http: HttpClient) {}
 
 
-  book(bookReq: BookReq): Observable<ApiResponse<BookRes>> {
-    return this.http.post<ApiResponse<BookRes>>(`${this.baseUrl}/book/book`, bookReq);
+  book(bookRequest: BookRequest): Observable<ApiResponse<BookResponse>> {
+    return this.http.post<ApiResponse<BookResponse>>(`${this.baseUrl}/book/book`, bookRequest);
   }
 }

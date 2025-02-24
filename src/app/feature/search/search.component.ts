@@ -6,12 +6,13 @@ import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { BookingService } from '../../core/services/booking.service';
 import { CheckStatusService } from '../../core/services/check-status.service';
-import { ApiResponse } from '../../shared/models/api-response';
-import { SearchRes } from '../../shared/models/search-res.model';
 import { Option } from '../../shared/models/options.model';
-import { SearchReq } from '../../shared/models/search-req.model';
 import { SignalRService } from '../../core/services/signal-r.service';
-import { BookRes } from '../../shared/models/book-res.model';
+import { SearchTypeEnum } from '../../shared/enums/search-type.enum';
+import { SearchRequest } from '../../shared/models/requests/search-request.model';
+import { ApiResponse } from '../../shared/models/responses/api-response.model';
+import { BookResponse } from '../../shared/models/responses/book-response.model';
+import { SearchResponse } from '../../shared/models/responses/search-response.model';
 
 @Component({
   selector: 'app-search',
@@ -22,11 +23,11 @@ import { BookRes } from '../../shared/models/book-res.model';
 })
 export class SearchComponent implements OnInit {
 
-  searchResults?: SearchRes;
+  searchResults?: SearchResponse;
   options: Option[] = [];
   bookingInProgress: string | null = null;
 
-  searchReq!: SearchReq;
+  searchRequest!: SearchRequest;
   loading: boolean = false;
   showColumnFlightInfo: boolean = false;
   today: string = '';
@@ -92,19 +93,19 @@ export class SearchComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.searchReq = this.searchForm.value;
-    this._searchService.search(this.searchReq).subscribe({
-      next: (response: ApiResponse<SearchRes>) => {
+    this.searchRequest = this.searchForm.value;
+    this._searchService.search(this.searchRequest).subscribe({
+      next: (response: ApiResponse<SearchResponse>) => {
         if(response && response.success && response.data) {
           this.options = response.data.options;
-          response.data.searchType == 1 ? this.showColumnFlightInfo = true : this.showColumnFlightInfo = false;
+          response.data.searchType == SearchTypeEnum.HotelAndFlight ? this.showColumnFlightInfo = true : this.showColumnFlightInfo = false;
           this.loading = false;
         } else {
           this._notificationService.error(response?.message as string);
           this.loading = false;
         }
       },
-      error: (errorResponse: ApiResponse<SearchRes>) => {
+      error: (errorResponse: ApiResponse<SearchResponse>) => {
         this._errorHandlerService.handleErrors(errorResponse);
         this.loading = false;
       }
@@ -112,14 +113,14 @@ export class SearchComponent implements OnInit {
   }
 
   onBook(optionCode: string): void {
-    const bookReq = {
+    const bookRequest = {
       optionCode,
-      searchReq: this.searchReq
+      searchRequest: this.searchRequest
     };
     this.bookingInProgress = optionCode;
-    this._bookingService.book(bookReq).subscribe({
-      next: (response: ApiResponse<BookRes>) => this.handleBookingResponse(response),
-      error: (errorResponse: ApiResponse<BookRes>) => this._errorHandlerService.handleErrors(errorResponse)
+    this._bookingService.book(bookRequest).subscribe({
+      next: (response: ApiResponse<BookResponse>) => this.handleBookingResponse(response),
+      error: (errorResponse: ApiResponse<BookResponse>) => this._errorHandlerService.handleErrors(errorResponse)
     });
    
   }

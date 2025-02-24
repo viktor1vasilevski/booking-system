@@ -1,5 +1,4 @@
-export interface BookRes {
+export interface BookResponse {
     bookingCode: string;
     bookingTime: Date;
   }
-  
