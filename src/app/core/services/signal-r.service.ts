@@ -7,13 +7,17 @@ import { environment } from '../../../enviroments/enviroment.dev';
   providedIn: 'root',
 })
 export class SignalRService {
+
   private hubConnection!: signalR.HubConnection;
   
 
   startConnection() {
+
     const apiKey = environment.apiKey;
+    const bookingHubUrl = environment.bookingHubUrl;
+    
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:44314/bookinghub', {
+      .withUrl(bookingHubUrl, {
         headers: {
           'Authorization': `${apiKey}`,
         },

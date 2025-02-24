@@ -15,7 +15,6 @@ export class BookingService {
 
   constructor(private http: HttpClient) {}
 
-
   book(bookRequest: BookRequest): Observable<ApiResponse<BookResponse>> {
     return this.http.post<ApiResponse<BookResponse>>(`${this.baseUrl}/book/book`, bookRequest);
   }

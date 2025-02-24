@@ -23,10 +23,8 @@ import { SearchResponse } from '../../shared/models/responses/search-response.mo
 })
 export class SearchComponent implements OnInit {
 
-  searchResults?: SearchResponse;
   options: Option[] = [];
   bookingInProgress: string | null = null;
-
   searchRequest!: SearchRequest;
   loading: boolean = false;
   showColumnFlightInfo: boolean = false;
@@ -113,6 +111,7 @@ export class SearchComponent implements OnInit {
   }
 
   onBook(optionCode: string): void {
+    debugger
     const bookRequest = {
       optionCode,
       searchRequest: this.searchRequest
